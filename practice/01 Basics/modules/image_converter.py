@@ -32,7 +32,20 @@ class Image2TimeSeries:
         prep_img: image after preprocessing
         """
 
-        # INSERT YOUR CODE
+        if len(img.shape) == 3:
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+        inverted_img = cv2.bitwise_not(img)
+
+        blurred_img = cv2.GaussianBlur(inverted_img, (5, 5), 0)
+
+        _, binary_img = cv2.threshold(blurred_img, 100, 255, cv2.THRESH_BINARY)
+
+        kernel = np.ones((5, 5), np.uint8)
+        eroded_img = cv2.erode(binary_img, kernel, iterations=1)
+        dilated_img = cv2.dilate(eroded_img, kernel, iterations=1)
+
+        prep_img = cv2.medianBlur(dilated_img, 5)
 
         return prep_img
 
