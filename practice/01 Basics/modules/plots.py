@@ -1,6 +1,9 @@
 import numpy as np
 import pandas as pd
 
+import matplotlib.pyplot as plt
+import numpy as np
+import cv2
 # for visualization
 import plotly
 from plotly.subplots import make_subplots
@@ -54,3 +57,52 @@ def plot_ts(ts_set: np.ndarray, plot_title: str = 'Input Time Series Set'):
                       )
 
     fig.show(renderer="colab")
+
+
+def display_image_matplotlib(img, contour, edge_coordinates, center):
+    """
+    Функция для отображения изображения с контурами и координатами используя matplotlib
+    """
+    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    
+    fig, ax = plt.subplots(figsize=(8, 8))
+    
+    ax.imshow(img_rgb)
+    
+    contour_plot = contour.squeeze()
+    ax.plot(contour_plot[:, 0], contour_plot[:, 1], 'g-', linewidth=3, label='Contour')
+    
+    for coord in edge_coordinates:
+        ax.plot([center[0], coord[0]], [center[1], coord[1]], 'm-', linewidth=2, alpha=0.7)
+    
+    ax.plot(center[0], center[1], 'ro', markersize=10, label='Center')
+    
+    ax.set_title('Image with Contours and Lines', fontsize=16)
+    ax.axis('off')
+    ax.legend()
+    
+    plt.tight_layout()
+    plt.show()
+
+def plot_ts_matplotlib(ts, title="Time Series"):
+    """
+    Функция для отображения временного ряда используя matplotlib
+    """
+    fig, ax = plt.subplots(figsize=(12, 5))
+    
+    angles = np.arange(0, 360, 360//len(ts))
+    ax.plot(angles, ts, 'b-', linewidth=3, marker='o', markersize=4, markerfacecolor='red')
+    
+    ax.set_xlabel('Angle (degrees)', fontsize=14)
+    ax.set_ylabel('Distance', fontsize=14)
+    ax.set_title(title, fontsize=16)
+    
+    ax.grid(False)
+    
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_linewidth(1)
+    ax.spines['bottom'].set_linewidth(1)
+    
+    plt.tight_layout()
+    plt.show()
